@@ -21,7 +21,7 @@ class RegistrationController extends BaseController
         ]);
 
         if ($validator->fail()) {
-            return json($validator->getMessages());
+            return json($validator->getMessages(), 400);
         }
 
         $user = new User;
