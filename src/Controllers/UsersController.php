@@ -71,8 +71,8 @@ class UsersController extends BaseController
             'password' => v::notOptional()->alnum()->noWhitespace()->length(8, 16)
         ]);
 
-        if ($validator->fail()) {
-            return json($validator->getMessages(), Http::BAD_REQUEST);
+        if ($validator->fail()) {   
+            throw new ValidationException($validator->getMessages());
         }
 
         $user = new User;

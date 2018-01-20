@@ -16,18 +16,34 @@ $settings = require __DIR__ . '/settings.php';
 /** @var Container */
 $container = Tuiter\Core\Container::instance($settings);
 
+$container['errorHandler'] = function ($c) {
+    return function ($request, $response, $exception) use ($c) {
+        $status = $exception->getCode() ?: 500;
+        $body = $exception instanceof \Tuiter\Core\Exceptions\ValidationException
+            ? $exception
+            : ['message' => $exception->getMessage()]; 
+        return $c['response']
+            ->withStatus($status)
+            ->withJson($body);
+    };
+};
+
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) {
+        return $response->withStatus(404);
+    };
+};
+
+$container['notAllowedHandler'] = function ($c) {
+    return function ($request, $response, $methods) {
+        return $response->withStatus(405);
+    };
+};
+
 /** @var Slim */
 $app = new \Slim\App($container);
 
 date_default_timezone_set('America/Recife');
-
-$container['errorHandler'] = function ($container) {
-    return function ($request, $response, $exception) use ($container) {
-        return $container['response']
-            ->withStatus($exception->getCode())
-            ->withJson($exception->getMessages());
-    };
-};
 
 require __DIR__ . '/dependencies.php';
 

@@ -1,3 +1,5 @@
 <?php
 
-$app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware($app));
+if (config('debug')) {
+    $app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware($app));
+}
