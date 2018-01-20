@@ -10,7 +10,7 @@ interface ValidatorInterface
      * @param array $input
      * @param array $rules
      * @param array $messages
-     * @return void
+     * @return bool
      */
     public function validate(array $input, array $rules, array $messages = []);
 

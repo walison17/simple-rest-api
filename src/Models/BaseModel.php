@@ -20,4 +20,9 @@ class BaseModel
 
         return $this;
     }
+    
+    public function equals(BaseModel $other)
+    {
+        return $this->id === $other->getId();
+    }
 }

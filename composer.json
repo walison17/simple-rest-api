@@ -17,7 +17,8 @@
         "monolog/monolog": "^1.17",
         "oscarotero/psr7-middlewares": "^3.21",
         "respect/validation": "^1.1",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "league/fractal": "^0.17.0"
     },
     "require-dev": {
         "zeuxisoo/slim-whoops": "^0.6.1",
@@ -28,7 +29,7 @@
     },
     "autoload": {
         "files": [
-            "app/helpers.php"
+            "src/helpers.php"
         ],
         "psr-4": {
             "Tuiter\\": "src/",
@@ -37,7 +38,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tuiter\\": "app/",
+            "Tuiter\\": "src/",
             "Tests\\": "tests/"
         }
     },

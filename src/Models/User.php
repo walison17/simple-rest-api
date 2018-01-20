@@ -2,14 +2,14 @@
 
 namespace Tuiter\Models;
 
-use JsonSerializable;
 use Tuiter\Core\Auth\Authenticatable;
 
-class User extends BaseModel implements Authenticatable, JsonSerializable
+class User extends BaseModel implements Authenticatable
 {
     private $username;
     private $email;
     private $password;
+    private $statuses;
 
     public function getPassword()
     {
@@ -68,12 +68,23 @@ class User extends BaseModel implements Authenticatable, JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize()
+    /**
+     * Get the value of statuses
+     */ 
+    public function getStatuses()
     {
-        return [
-            'id' => $this->id,
-            'emai' => $this->email, 
-            'username' => $this->username,
-        ];
+        return $this->statuses;
+    }
+
+    /**
+     * Set the value of statuses
+     *
+     * @return self
+     */ 
+    public function setStatuses(array $statuses)
+    {
+        $this->statuses = $statuses;
+
+        return $this;
     }
 }

@@ -20,14 +20,26 @@ $container['auth.jwt'] = function ($container) {
     return new \Tuiter\Core\Auth\Authenticator($provider);
 };
 
-$container['auth.controller'] = function ($c) {
+$container['registration.controller'] = function ($c) {
+    return new \Tuiter\Controllers\RegistrationController($c['user.repository']);
+};
+
+$container['AuthController'] = function ($c) {
     return new \Tuiter\Controllers\AuthController($c);
 };
 
-$container['registration.controller'] = function ($c) {
-    return new \Tuiter\Controllers\RegistrationController($c);
+$container['user.transformer'] = function ($c) {
+    return new \Tuiter\Models\Transformers\UserTransformer;
 };
 
-$container['users.controller'] = function ($c) {
-    return new \Tuiter\Controllers\UsersController($c);
+$container['fractal'] = function ($c) {
+    return new \League\Fractal\Manager;
+};
+
+$container['UsersController'] = function ($c) {
+    return new \Tuiter\Controllers\UsersController(
+        $c['user.repository'], 
+        new \Tuiter\Models\Transformers\UserTransformer,
+        new \League\Fractal\Manager
+    );
 };

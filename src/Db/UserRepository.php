@@ -3,13 +3,15 @@
 namespace Tuiter\Db;
 
 use Tuiter\Models\User;
-use Tuiter\Core\Auth\AuthRepositoryInterface as AuthRepository;
+use UserRepositoryAuthRepository;
+use Tuiter\Db\UserRepositoryInterface;
+use Tuiter\Core\Auth\AuthRepositoryInterface;
 
-class UserRepository extends BaseRepository implements AuthRepository
+class UserRepository extends BaseRepository implements UserRepositoryInterface, AuthRepositoryInterface
 {
     public function getById($id)
     {
-        $query = "SELECT * FROM users WHERE id = :id";
+        $query = "SELECT * FROM users u WHERE u.id = :id";
 
         try {
             $sttm = $this->connection->prepare($query);
@@ -26,7 +28,18 @@ class UserRepository extends BaseRepository implements AuthRepository
     
     public function getByEmail(string $email)
     {
-        
+        $query = 'SELECT * FROM users u WHERE u.email = :email';
+
+        try {
+            $sttm = $this->connection->prepare($query);
+            $sttm->bindValue(':email', $email);
+            $sttm->execute();
+
+            $row = $sttm->fetch(\PDO::FETCH_ASSOC);
+            return $row ? $this->mapRowToObject($row) : null;
+        } catch (PDOException $ex) {
+            throw new \Exception($ex->getMessage());
+        }
     }
 
     public function getAll()
@@ -66,6 +79,8 @@ class UserRepository extends BaseRepository implements AuthRepository
         } catch (PDOException $e) {
             throw new \Exception($e->getMessage());
         }
+
+        $user->setId($this->connection->lastInsertId());
     }
 
     public function has(User $user)
@@ -73,12 +88,47 @@ class UserRepository extends BaseRepository implements AuthRepository
         return ! is_null($this->getById($user->getId()));
     }
 
+    public function getByUsername(string $username)
+    {
+        $query = 'SELECT * FROM users WHERE username = :username';
+
+        try {
+            $sttm = $this->connection->prepare($query);
+            $sttm->bindValue(':username', $username);
+            $sttm->execute();
+
+            $row = $sttm->fetch(\PDO::FETCH_ASSOC);
+            return $row ? $this->mapRowToObject($row) : null; 
+        } catch (PDOException $ex) {
+            throw new \Exception($ex->getMessage());
+        }   
+    }
+
+    /**
+     * Deleta um usuário
+     *
+     * @param User $user
+     * @return \Tuiter\Models\User
+     */
+    public function delete(User $user)
+    {
+        $query = 'DELETE FROM users WHERE username = :username';
+
+        try {
+            $sttm = $this->connection->prepare($query);
+            $sttm->bindValue(':username', $user->getUsername());
+            $sttm->execute();
+        } catch (PDOException $ex) {
+            throw new Exception($ex->getMessage());
+        }
+    }
+
     private function mapRowToObject(array $row)
     {
         return (new User)
             ->setId($row['id'])
             ->setEmail($row['email'])
-            ->setPassword($row['password'])
-            ->setUsername($row['username']);
+            ->setUsername($row['username'])
+            ->setPassword($row['password']);
     }
 }

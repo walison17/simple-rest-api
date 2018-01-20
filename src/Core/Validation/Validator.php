@@ -24,6 +24,8 @@ class Validator
                 $this->errors[$field] = $e->getMessages();
             }
         }
+
+        return ! empty($this->errors);
     }
 
     /**

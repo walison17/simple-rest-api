@@ -23,7 +23,7 @@ abstract class BaseRepository
         $placeholders = array_map(function ($column) {
             return ":{$column}";
         }, array_keys($columns));
-   
+    
         return implode(', ', $placeholders);
     }
 }

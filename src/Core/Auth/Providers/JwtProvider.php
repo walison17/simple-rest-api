@@ -74,10 +74,14 @@ class JwtProvider implements UserProviderInterface
      */
     public function getActivated()
     {
-        [$token] = $this->request->getHeader('Authorization');
+        $token = $this->request->getHeaderLine('Authorization');
+        if (! $token) {
+            return null;
+        }
+
         $decoded = JWT::decode($token, config('jwt_key'), ['HS256']);
 
-        return $this->repository->getById($decoded->id);
+        return $this->repository->getById($decoded->sub);
      }
 
     /**
